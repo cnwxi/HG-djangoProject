@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<style>
+	.content{
+		box-shadow: 0px 0px 25px 1px rgba(50, 50, 50, 0.3);	
+		
+	}
+	.img{
+		
+		background:url("/static/img/background1.jpeg");
+		height:600px;
+		text-align:center;
+		background-position:left top;
+		background-size:880px 580px;
+		background-repeat:no-repeat;
+
+	}
+	
+	
+</style>
+{% endblock %}
+{% block title%}主页{% endblock %}
+{% block content %}
+<div class="container content">
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<h1></h1>
+		</div>
+	</div>
+	
+	
+	<div class="row">	
+		<!--left-->	
+		<div class="col-md-9">		
+			<div class="text-center img">
+				<div style="padding-top:280px;">
+					<p style="font-size:50px;color:#fff;">
+						LET 'S MAKE OUR WORLD <br>
+						BETTER
+					</p>
+				</div>
+				
+			</div>
+			
+		</div>
+		<!--right-->
+		<div class="col-md-3">
+			<div style=" padding:15px 0 15px 0;box-shadow: 0px 0px 25px 1px rgba(50, 50, 50, 0.1);height:580px;">
+				<h3 class="text-center">关于人体动作姿态识别</h3>
+				<div class="text-center" style="padding:15px 0 15px 0;">
+					<img class="img-fluid" src="/static/img/R-C.jpg" width="240">
+				</div>
+				
+				<div class="text-left" style="padding:20px 20px 0px 20px">
+					<p style="line-height:1.6;font-weight:200;" >
+                        人体姿态识别对现实十分有意义。它可以应用于摔倒检测、运动指导、手势翻译、人机交互、AR、
+                        VR等方面，对现实生活的教育、娱乐、安防领域有着重要贡献。
+					</p>
+					
+				</div>
+			</div>
+		
+		</div>
+	</div>
+
+</div>
+
+{% endblock%}
+

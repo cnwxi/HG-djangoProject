@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>登录</title>
+    <!--js-->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/matrix.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!--添加favicon-->
+	<link rel="shortcut icon" type="image/png" href="/static/img/favicon.ico"/>
+    <style>
+        .position{
+            position:absolute;
+            left:0;
+            right:0;
+            top:0;
+            bottom:0;
+            margin:auto;
+            }
+
+        /* 透明块*/
+        .signup-form {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top:100px;
+            text-align: center;
+            background-color: transparent;
+            width: 300px;
+            padding:30px 0 50px 0;
+            border-radius: 20px;
+            border: 1px solid green;
+
+            }
+
+
+        /*表单输入样式*/
+        .input-field {
+            margin:auto;
+            width: 250px;
+            border: 1px solid green;
+            background-color: transparent;
+            border-radius: 4px;
+            height:40px;
+            font-size:16px;
+            color:#fff;
+            letter-spacing:1px;
+
+        }
+        /* 登录按钮样式*/
+        .form-submit{
+            width:250px;
+            height:40px;
+            line-height:40px;
+            background-color:green;
+            color:#fff;
+            letter-spacing:1px;
+            border-radius: 4px;
+            border: 1px solid green;
+            font-size:16px;
+            margin-top:20px;
+            font-weight:500;
+
+            }
+
+    </style>
+</head>
+<body>
+<div align="center" style=" position:fixed; left:0; top:0px; width:100%; height:100%;">
+    <canvas id="q" width="1440" height="900"></canvas>
+</div>
+
+
+<div class="position">
+    <div class="signup-form">
+        <!--头像和提示-->
+        <div style="padding:20px 0;">
+
+            <img src= "/static/img/logo.png" class=" center-block img-circle" width="80" height="80" />
+            {% if LOGIN %}
+            <h3 class="text-center" style="color:green;" >
+                <span class="glyphicon glyphicon-bell">：</span>{{ LOGIN }}
+            </h3>
+
+            {% endif %}
+            {% if NOT_ACTIVE  %}
+            <h3 class="text-center"style="color:red;">
+                <span class="glyphicon glyphicon-warning-sign">：</span>{{ NOT_ACTIVE }}
+            </h3>
+            {% endif %}
+            {% if ERROR %}
+
+            <h3 class="text-center" style="color:red;">
+                <span class="glyphicon glyphicon-remove-sign">：</span>{{ ERROR }}
+            </h3>
+            {% endif %}
+        </div>
+
+
+        <!--登陆表单-->
+        <div >
+            <form ation="" method="post">
+                <!--防止跨站脚本攻击-->
+              {% csrf_token %}
+                <div class="form-group" >
+                    <input type="text" class="form-control input-field " name="username" placeholder="username">
+                    <input type="password" class="input-field form-control" name="password" placeholder="password">
+                    <button type="submit" class="form-submit">sign in</button>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+
+   
+</body>
+</html>

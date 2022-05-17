@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block head %}
+    <style>
+
+        .function {
+            padding: 30px;
+            text-align: center;
+            color: #333;
+            border-bottom: 2px solid #eee;
+        }
+
+        .p1 {
+            font-weight: 200;
+            font-size: 16px;
+            line-height: 20px;
+        }
+
+        h3 {
+            text-align: center;
+        }
+
+        textarea {
+            width: 530px;
+            overflow-Y: scroll;
+            height: 130px;
+            border: 0 solid transparent;
+            background: transparent;
+            resize: none;
+            padding-bottom: 0;
+        }
+    </style>
+    <script src="/static/flv/flv.min.js"></script>
+{% endblock %}
+
+{% block title %} 监控查看  {% endblock %}
+
+{% block content %}
+    <div class="container" style="box-shadow: 0 0 25px 1px rgba(50, 50, 50, 0.3);">
+        <div class="row">
+            <div class="function">
+                <div style="padding:10px;">
+                    <h1>监控查看</h1>
+                </div>
+                <p class="p1">远程视频监控，存在危险行为时提示用户以规避风险</p>
+                <p class="p1">该功能是基于Http-flv、flv.js、rtmp、人体姿态识别打造的智能监控系统</p>
+                <p class="p1">{{ info }}</p>
+            </div>
+        </div>
+        <!--监控-->
+        <div class='row' style="padding: 30px 150px 60px;">
+            <div class="col text-center ">
+                <div class="card ratio ratio-16x9">
+                    <video id="videoElement" muted="muted" controls="controls"></video>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function start() {
+                if (flvjs.isSupported()) {
+                    let videoElement = document.getElementById('videoElement');
+                    let flvPlayer = flvjs.createPlayer({
+                        type: 'flv',
+                        isLive: true,
+                        {% autoescape off %}
+                        url: "{{ link }}"
+                        {% endautoescape %}
+                    });
+                    flvPlayer.attachMediaElement(videoElement);
+                    flvPlayer.load();
+                    flvPlayer.play();
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                start();
+            });
+        </script>
+    </div>
+
+{% endblock %}
+
+
+
+
+

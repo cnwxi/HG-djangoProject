@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+{% block head %}
+    <style>
+
+        .function {
+            padding: 30px;
+            text-align: center;
+            color: #333;
+            border-bottom: 2px solid #eee;
+        }
+
+        .p1 {
+            font-weight: 200;
+            font-size: 16px;
+            line-height: 20px;
+        }
+
+        h3 {
+            text-align: center;
+        }
+
+        textarea {
+            width: 530px;
+            overflow-Y: scroll;
+            height: 130px;
+            border: 0 solid transparent;
+            background: transparent;
+            resize: none;
+            padding-bottom: 0;
+        }
+    </style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/csrf.js"></script>
+{% endblock %}
+
+{% block title %} 设置  {% endblock %}
+
+{% block content %}
+    <div class="container" style="box-shadow: 0 0 25px 1px rgba(50, 50, 50, 0.3);">
+        <div class="row">
+            <div class="function">
+                <div style="padding:10px;">
+                    <h1>用户设置</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="m-auto" style="padding: 10px;width: 600px;">
+                <div id="live_div" style="padding: 10px">
+                    <form>
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">监控流地址</span>
+                            <input type="text" class="form-control  input-field" id="link"
+                                   aria-describedby="basic-addon3"
+                                   placeholder="{% if live %} {{ live.link }} {% else %} 监控地址未配置 {% endif %}">
+                        </div>
+                        <input class="btn btn-primary text-center" id="change_link"
+                               value="{% if live %} 提交修改 {% else %} 新增地址 {% endif %}">
+                    </form>
+                </div>
+                <hr>
+                <div id="push_div" style="padding: 10px">
+                    <form>
+                        {#                <input class="form-check-input" type="checkbox" value="{{ push.flag }}" id="flexCheckIndeterminate" >#}
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">corp_id</span>
+
+                            <input type="text" class="form-control  input-field" id="corp_id"
+                                   aria-describedby="basic-addon3"
+                                   placeholder="{% if push %}{{ push.corp_id }}{% else %} corp_id未配置 {% endif %}">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">agent_id</span>
+                            <input type="text" class="form-control  input-field" id="agent_id"
+                                   aria-describedby="basic-addon3"
+                                   placeholder="{% if push %} {{ push.agent_id }} {% else %} agent_id未配置 {% endif %}">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">corp_secret</span>
+                            <input type="text" class="form-control  input-field" id="corp_secret"
+                                   aria-describedby="basic-addon3"
+                                   placeholder="{% if push %} {{ push.corp_secret }} {% else %} corp_secret未配置 {% endif %}">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">推送状态</span>
+                            <span type="text" class="form-control  input-field" id="flag"
+                                  aria-describedby="basic-addon3">
+                              {% if push.flag %} 推送启用 {% else %} 推送关闭 {% endif %}</span>
+                        </div>
+                        <input class="btn btn-primary text-center" id="change_push"
+                               value="{% if push %} 修改配置 {% else %} 新增配置 {% endif %}">
+                        {% if push %}
+                            <input class="btn btn-primary text-center" id="on_off_push"
+                                   value="开关推送">
+                        {% endif %}
+
+                    </form>
+                </div>
+                <br>
+                <div id="email_div" style="padding: 10px">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">邮箱</span>
+                            <input type="email" class="form-control  input-field" id="email" required="required"
+                                   aria-describedby="basic-addon3" placeholder="{{ user.email }}">
+                        </div>
+                        <div>
+                            <input class="btn btn-primary text-center" autocomplete="new-password" id="change_email"
+                                    value="修改邮箱">
+                        </div>
+
+                    </form>
+                </div>
+                <div class="text-center">
+                    <form method="post">
+                        <input class="btn  btn-dark text-center" autocomplete="off" id="check_push" value="测试推送">
+                    </form>
+                </div>
+                <hr>
+                <div id="password_div" style="padding: 10px">
+                    <form>
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">旧密码</span>
+                            <input type="password" required="required" class="form-control  input-field"
+                                   id="old_password"
+                                   aria-describedby="basic-addon3" placeholder="输入旧密码，6到16位数字字母组合">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon3">新密码</span>
+                            <input type="password" required="required" class="form-control  input-field"
+                                   id="new_password"
+                                   aria-describedby="basic-addon3" placeholder="输入新密码，6到16位数字字母组合">
+                        </div>
+                        <input class="btn btn-primary text-center" id="change_password" value="修改密码">
+                    </form>
+                </div>
+                <br>
+
+                <script type="text/javascript">
+                    function check_link() {
+                        let link = $('#link').val().trim()
+                        if (link !== '') {
+                            let reg = /^(?:(http|https|ftp):\/\/)?((?:[\w-]+\.)+[a-z0-9]+)((?:\/[^/?#]*)+)?(\?[^#]+)?(#.+)?$/i;
+                            if (reg.test(link)) {
+                                return true;
+                            } else {
+                                alert('URL格式不正确');
+                                return false;
+                            }
+                        } else {
+                            alert('请输入URL！')
+                            return false;
+                        }
+                    }
+
+                    function check_conf() {
+                        let corp_id = $('#corp_id').val().trim();
+                        let agent_id = $('#agent_id').val().trim();
+                        let corp_secret = $('#corp_secret').val().trim();
+                        if (corp_id.length == 0 || agent_id.length == 0 || corp_secret.length == 0) {
+                            alert('请输入完整的参数');
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+
+                    function check_email() {
+                        let email = $('#email').val().trim();
+                        if (email.length != 0) {
+                            let reg = /^([a-zA-Z0-9]*[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                            if (reg.test(email)) {
+                                {#alert(email.type);#}
+                                return true;
+                            } else {
+                                alert("邮箱格式不正确");
+                                return false;
+                            }
+                        } else {
+                            alert("请输入电子邮件！");
+                            return false;
+                        }
+                    }
+
+                    function check_pw() {
+                        let old_pw = $("#old_password").val().trim();
+                        let new_pw = $("#new_password").val().trim();
+                        let reg = /^[A-Za-z0-9]{6,16}$/;
+                        if (old_pw.length == 0 || new_pw.length == 0) {
+                            alert('请完整输入密码');
+                            return false;
+                        }
+                        console.log(reg.lastIndex)
+                        if (!reg.test(old_pw)) {
+                            alert('旧密码格式不正确');
+
+                            {#alert(old_pw.type);#}
+                            return false;
+                        }
+                        if (!reg.test(new_pw)) {
+                            alert('新密码格式不正确')
+                            return false;
+                        }
+                        if (old_pw == new_pw) {
+                            alert('新密码不应与旧密码相同')
+                            return false;
+                        }
+                        return true;
+                    }
+
+
+                    $('#change_link').click(function () {
+                        if (!check_link()) {
+                            return;
+                        } else {
+                            $.ajax({
+                                url: '/{{ userid }}/change_link',
+                                type: 'POST',
+                                data: {
+                                    link: $('#link').val().trim()
+                                },
+                                success: function (data) {
+{#                                    $("#link").attr('value','');#}
+{#                                    $("#link").val('');#}
+{#                                    $("#link").attr('placeholder', data['link']);#}
+                                    alert(data['msg']);
+                                    window.location.reload();
+                                },
+                                error: function (data) {
+                                    alert('提交失败');
+                                }
+                            })
+                        }
+                    });
+
+                    $('#change_push').click(function () {
+                        if (!check_conf()) {
+                            return;
+                        } else {
+                            $.ajax({
+                                url: '/{{ userid }}/change_push',
+                                type: 'POST',
+                                data: {
+                                    corp_id: $('#corp_id').val().trim(),
+                                    agent_id: $('#agent_id').val().trim(),
+                                    corp_secret: $('#corp_secret').val().trim()
+                                },
+                                success: function (data) {
+{#                                    $("#corp_id").attr('value','');#}
+{#                                    $("#corp_id").val('');#}
+{#                                    $("#corp_id").attr('placeholder', data['corp_id']);#}
+{#                                    $("#agent_id").attr('value','');#}
+{#                                    $("#agent_id").val('');#}
+{#                                    $("#agent_id").attr('placeholder', data['corp_secret']);#}
+{#                                    $("#corp_secret").attr('value','');#}
+{#                                    $("#corp_secret").val('');#}
+{#                                    $("#corp_secret").attr('placeholder', data['corp_secret']);#}
+                                    alert(data['msg']);
+                                    window.location.reload();
+                                },
+                                error: function (data) {
+                                    alert('提交失败');
+                                }
+                            })
+                        }
+                    });
+
+                    $('#on_off_push').click(function(){
+                        $.ajax({
+                            url: '/{{ userid }}/on_off_push',
+                            type: 'GET',
+                            success: function(data){
+{#                                if(data['flag']){#}
+{#                                    $("#flag").text('推送开启');#}
+{#                                }#}
+{#                                else{#}
+{#                                    $("#flag").text('推送关闭');#}
+{#                                }#}
+                                alert(data['msg']);
+                                window.location.reload();
+                             },
+                            error: function (data) {
+                                alert('提交失败');
+                            }
+                        })
+                    });
+
+                    $('#change_email').click(function () {
+                        if (!check_email()) {
+                            {#alert('请输入电子邮件！')#}
+                            return;
+                        } else {
+                            $.ajax({
+                                url: '/{{ userid }}/change_email',
+                                type: 'POST',
+                                data: {
+                                    {#userid: {{ userid }},#}
+                                    email: $("#email").val().trim()
+                                },
+                                success: function (data) {
+                                    {#$("#email").html(data['msg']);#}
+{#                                    $("#email").attr('value','');#}
+{#                                    $("#email").val('');#}
+{#                                    $("#email").attr('placeholder', data['email']);#}
+                                    window.location.reload();
+                                    alert(data['msg']);
+                                },
+                                error: function (data) {
+                                    $("#email").attr('');
+                                    alert('提交失败');
+                                }
+                            })
+                        }
+                    });
+
+
+
+                    $('#change_password').click(function () {
+                        if (!check_pw()) {
+                            return;
+                        } else {
+                            $.ajax({
+                                url: '/{{ userid }}/change_password',
+                                type: 'POST',
+                                data: {
+                                    old_pw: $('#old_password').val().trim(),
+                                    new_pw: $('#new_password').val().trim()
+                                },
+                                success: function (data) {
+                                    window.location.reload();
+                                    alert(data['msg']);
+                                },
+                                error: function (data) {
+                                    alter('提交失败');
+                                }
+                            })
+                        }
+                    });
+
+                    $('#check_push').click(function () {
+                        $.ajax({
+                            url: '/{{ userid }}/check_push',
+                            type: 'GET',
+                            success: function (data) {
+                                alert(data['msg']);
+                            },
+                            error: function () {
+                                alert('提交失败');
+                            }
+                        })
+                    });
+
+
+
+
+
+
+                </script>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+
